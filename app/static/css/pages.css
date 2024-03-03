@@ -1,0 +1,46 @@
+        html {
+        background-image: url('../img/8.jpg');
+        background-repeat: repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        }
+        body {
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          background: transparent;
+          height: 100%;
+        }
+        .form,
+        form {
+            margin-top: 100px;
+            padding-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            width: 320px;
+        }
+        .btn,
+        button,
+        input{
+          font-family: inherit;
+          font-size: 100%;
+          line-height: 1.15;
+          margin: 5px;
+        }
+        #answer{
+            background-color: aliceblue;
+        }
+        h6{
+            padding: 3px;
+            margin: 5px;
+            text-align: center;
+        }

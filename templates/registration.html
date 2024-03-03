@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+    
+<form method="post" action="">
+    <input id="log" name="login" class="form-control" placeholder="*Имя">
+    <input id="email" name="email" class="form-control" placeholder="*Почта">
+    <input id="pass" name="pass" class="form-control" placeholder="*Пароль">
+    <input id="rpass" name="repeat_pass" class="form-control" placeholder="*Повтор пароля">
+
+    <button id="btnreg" class="btn btn-success">Зарегистрироваться</button>
+    <h6 id="answer">{{ form }}</h6>
+</form>
+
+<script>
+    btnreg.onclick = (e) => {
+        if (log.value === '') {
+            e.preventDefault()
+            answer.innerHTML = "Имя пользователя не задано!"
+            return
+        }
+        if (email.value === '') {
+            e.preventDefault()
+            answer.innerHTML = "Почта не задана!"
+        }
+        else {
+            if (pass.value === '') {
+                e.preventDefault()
+                answer.innerHTML = "Не задан пароль!"
+            }
+            else {
+                if (pass.value != rpass.value) {
+                    e.preventDefault()
+                    answer.innerHTML = "Пароли не совпадают:<br> повторите пароль!"
+                    rpass.value = ''
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

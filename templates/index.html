@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<div class="form">
+    <a href="{% url 'login' %}" class="btn btn-success">Пройти авторизацию</a>
+    <a href="{% url 'register' %}" class="btn btn-success">Пройти регистрацию</a>
+</div>
+{% endblock %}
