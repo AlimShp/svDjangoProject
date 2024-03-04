@@ -58,11 +58,14 @@ def login(request):
         for u in users:
             if request.POST['email'] == u.email:
                 if request.POST['pass'] == u.password:
+                    # new session key for user
+                    u.user_session = generate_session(u.email)
+                    u.save(force_update=True)
                     html = redirect('/')
                     html.set_cookie('user_session', u.user_session)
                     return html
                 else:
-                    answer = 'Ошибка при вводе пароля!'
+                    answer = 'Неправильный пароль!'
             else:
                 answer = 'Неверное имя пользователя!'
     return render(request, 'login.html', {'subtitle': ': Авторизация', 'form': answer})
