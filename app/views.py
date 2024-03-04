@@ -18,10 +18,15 @@ def index(request):
                 if request.method == "GET":
                     return render(request, 'profile.html', {'user': u.name})
                 if request.method == "POST":
-                    print('Пользователь вышел')
-                    html = render(request, 'index.html')
-                    html.delete_cookie('user_session')
-                    return html
+                    # проверка, что нажата кнопка Выйти
+                    if 'logout' in request.POST:
+                        print('Пользователь вышел')
+                        html = render(request, 'index.html')
+                        html.delete_cookie('user_session')
+                        return html
+                    # if 'back' in request.POST:
+                    #     print("Нажата кнопка Назад")
+                    return render(request, 'profile.html', {'user': u.name})
         else:
             print('Куки удалены')
             html = render(request, 'index.html')
