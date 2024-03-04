@@ -2,8 +2,8 @@
 {% load static %}
 {% block page_content %}
 <form method="post" action="">
-    <input name="email" class="form-control" placeholder="Почта">
-    <input name="pass" class="form-control" placeholder="Пароль">
+    <input name="email" class="form-control" placeholder="Почта" maxlength="50">
+    <input name="pass" class="form-control" placeholder="Пароль" maxlength="50">
     <button class="btn btn-success">Проверить</button>
     <h6 id="answer">{{ form }}</h6>
 </form>
