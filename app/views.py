@@ -15,8 +15,13 @@ def index(request):
         for u in users:
             if u.user_session == user_session:
                 print(request.method)
+                print(u.user_image)
+                profile_img = 'base_profile.jpg'
+                if u.user_image:
+                    profile_img = u.user_image
+                print(profile_img)
                 if request.method == "GET":
-                    return render(request, 'profile.html', {'user': u.name})
+                    return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img})
                 if request.method == "POST":
                     # проверка, что нажата кнопка Выйти
                     if 'logout' in request.POST:
@@ -24,9 +29,11 @@ def index(request):
                         html = render(request, 'index.html')
                         html.delete_cookie('user_session')
                         return html
-                    # if 'back' in request.POST:
-                    #     print("Нажата кнопка Назад")
-                    return render(request, 'profile.html', {'user': u.name})
+                    if 'back' in request.POST:
+                        profile_img = 'base_profile.jpg'
+                    if 'load' in request.POST:
+                        profile_img = '8.jpg'
+                    return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img})
         else:
             print('Куки удалены')
             html = render(request, 'index.html')
