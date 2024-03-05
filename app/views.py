@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 from app.form import ImageForm
-from app.models import ModelReg
+from app.models import ModelReg, ProfileImg
 
 
 @csrf_exempt
@@ -21,9 +21,9 @@ def index(request):
                 if u.user_image:
                     profile_img = u.user_image
                 print(profile_img)
-                if request.method == "GET":
-                    form = ImageForm()
-                    return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form})
+                # if request.method == "GET":
+                #     form = ImageForm()
+                #     return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form})
                 if request.method == "POST":
                     # проверка, что нажата кнопка Выйти
                     if 'logout' in request.POST:
@@ -35,8 +35,21 @@ def index(request):
                         profile_img = 'base_profile.jpg'
                     if 'load' in request.POST:
                         profile_img = '8.jpg'
-                    form = ImageForm()
-                    return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form})
+                        form = ImageForm(request.POST, request.FILES)
+                        if form.is_valid():
+                            fname = request.FILES['user_image'].name
+                            print(fname)
+                            print(rename_image(fname, u.id))
+                            form.save()
+
+                            #added_image = ProfileImg.objects.last()
+                        # return render(request, 'profile.html',
+                        #               {'user': u.name, 'profile_image': profile_img, 'form': form})
+
+
+
+                form = ImageForm()
+                return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form})
         else:
             print('Куки удалены')
             html = render(request, 'index.html')
@@ -91,3 +104,7 @@ def generate_session(key: str):
     while len(key) < 48:
         key += chr(random.randint(65, 90))
     return key
+
+def rename_image(fname: str, user_id: int):
+    new_fname = 'IMG-' + str(user_id) + '.' + fname.split('.')[-1]
+    return new_fname

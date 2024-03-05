@@ -9,7 +9,7 @@ class ModelReg(models.Model):
     user_image = models.CharField(null=True, max_length=260)
 
 class ProfileImg(models.Model):
-    ваше_фото = models.ImageField(upload_to='app/static/img')
+    user_image = models.ImageField(upload_to='app/static/img', verbose_name=u'Ваше фото')
 
 
 
