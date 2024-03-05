@@ -8,26 +8,22 @@ from app.form import ImageForm
 from app.models import ModelReg
 
 
+hasBotStarted = False
 image_dir = 'app/static/img/'
 
 
 @csrf_exempt
 def index(request):
+    global hasBotStarted
     user_session = request.COOKIES.get('user_session')
     if user_session:
         print('Есть куки: ' + user_session)
         users = ModelReg.objects.all()
         for u in users:
             if u.user_session == user_session:
-                print(request.method)
-                print(u.user_image)
                 profile_img = 'base_profile.jpg'
                 if u.user_image:
                     profile_img = u.user_image
-                print(profile_img)
-                # if request.method == "GET":
-                #     form = ImageForm()
-                #     return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form})
                 if request.method == "POST":
                     # проверка, что нажата кнопка Выйти, и удаление пользовательской сессии
                     if 'logout' in request.POST:
@@ -35,9 +31,14 @@ def index(request):
                         html = render(request, 'index.html')
                         html.delete_cookie('user_session')
                         return html
-                    if 'back' in request.POST:
-                        profile_img = 'base_profile.jpg'
-                    # загрузка изображения
+                    if 'tbot' in request.POST:
+                        if hasBotStarted:
+                            profile_img = u.user_image
+                            hasBotStarted = False
+                        else:
+                            profile_img = 'base_profile.jpg'
+                            hasBotStarted = True
+                            # загрузка изображения
                     if 'load' in request.POST:
                         form = ImageForm(request.POST, request.FILES)
                         if form.is_valid():
@@ -54,7 +55,8 @@ def index(request):
                             profile_img = u.user_image
 
                 form = ImageForm()
-                return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form})
+                bot_button = ["Запустить", "Остановить"]
+                return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form, 'bot': bot_button[hasBotStarted]})
         else:
             # удаляем куки с сессией, если пользователь с таким сессионным ключом не найден
             html = render(request, 'index.html')

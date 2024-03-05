@@ -25,7 +25,7 @@
              <form method="post" enctype="multipart/form-data">
                  {% csrf_token %}
                  {{ form.as_p }}
-                 <button class="btn btn-success" name="load" type="submit">Загрузить изображение</button>
+                 <button id="load" class="btn btn-secondary btn-block" name="load" type="submit" style="background-color: slateblue">Загрузить изображение</button>
              </form>
          </div>
 
@@ -35,12 +35,25 @@
          <div class="row justify-content-between" style="margin: 10px">
              <h3>Добро пожаловать, {{ user }}!</h3>
                  <form action="" method="post">
-                     <button type="submit" name="logout" class="btn btn-outline-danger"> << Выйти >> </button>
-                     <button type="submit" name="back" class="btn btn-outline-danger"> << Назад >> </button>
+                     <button type="submit" name="logout" class="btn btn-outline-secondary"> << Выйти >> </button>
                  </form>
          </div>
+         <div class="row justify-content-center" style="margin-top: 50px">
+            <h3> Перейти в <a href="https://t.me/SviatlanaYBot"> Телеграм бот</a></h3>
+         </div>
+         <form action="" method="post">
+                <button type="submit" name="tbot" class="btn btn-primary btn-block"> {{ bot }} </button>
+         </form>
      </div>
 </div>
 </div>
+<script>
+    load.addEventListener('mouseenter', () => {
+        load.style.background = 'darkslateblue'
+    })
+    load.addEventListener('mouseout', () => {
+        load.style.background = 'slateblue'
+    })
+</script>
 </body>
 </html>
