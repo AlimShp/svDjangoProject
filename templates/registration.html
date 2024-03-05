@@ -4,9 +4,9 @@
     
 <form method="post" action="">
     <input id="log" name="name" class="form-control" placeholder="*Имя" maxlength="50">
-    <input id="email" name="email" class="form-control" placeholder="*Почта" maxlength="50">
-    <input id="pass" name="pass" class="form-control" placeholder="*Пароль" maxlength="50">
-    <input id="rpass" name="repeat_pass" class="form-control" placeholder="*Повтор пароля" maxlength="50">
+    <input id="email" name="email" type="email" class="form-control" placeholder="*Почта" maxlength="50">
+    <input id="pass" name="pass" type="password" class="form-control" placeholder="*Пароль" maxlength="50">
+    <input id="rpass" name="repeat_pass"type="password"  class="form-control" placeholder="*Повтор пароля" maxlength="50">
 
     <button id="btnreg" class="btn btn-success">Зарегистрироваться</button>
     <h6 id="answer">{{ form }}</h6>
