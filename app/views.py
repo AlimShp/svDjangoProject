@@ -3,6 +3,7 @@ import random
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
+from app.form import ImageForm
 from app.models import ModelReg
 
 
@@ -21,7 +22,8 @@ def index(request):
                     profile_img = u.user_image
                 print(profile_img)
                 if request.method == "GET":
-                    return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img})
+                    form = ImageForm()
+                    return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form})
                 if request.method == "POST":
                     # проверка, что нажата кнопка Выйти
                     if 'logout' in request.POST:
@@ -33,7 +35,8 @@ def index(request):
                         profile_img = 'base_profile.jpg'
                     if 'load' in request.POST:
                         profile_img = '8.jpg'
-                    return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img})
+                    form = ImageForm()
+                    return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form})
         else:
             print('Куки удалены')
             html = render(request, 'index.html')

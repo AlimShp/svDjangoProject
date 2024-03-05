@@ -23,7 +23,9 @@
             </div>
          <div>
              <form method="post" enctype="multipart/form-data">
-                 <button class="btn btn-success" name="load" type="submit">Загрузить</button>
+                 {% csrf_token %}
+                 {{ form.as_p }}
+                 <button class="btn btn-success" name="load" type="submit">Загрузить изображение</button>
              </form>
          </div>
 
