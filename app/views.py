@@ -1,10 +1,14 @@
+import os
 import random
 
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 from app.form import ImageForm
-from app.models import ModelReg, ProfileImg
+from app.models import ModelReg
+
+
+image_dir = 'app/static/img/'
 
 
 @csrf_exempt
@@ -25,7 +29,7 @@ def index(request):
                 #     form = ImageForm()
                 #     return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form})
                 if request.method == "POST":
-                    # проверка, что нажата кнопка Выйти
+                    # проверка, что нажата кнопка Выйти, и удаление пользовательской сессии
                     if 'logout' in request.POST:
                         print('Пользователь вышел')
                         html = render(request, 'index.html')
@@ -33,25 +37,26 @@ def index(request):
                         return html
                     if 'back' in request.POST:
                         profile_img = 'base_profile.jpg'
+                    # загрузка изображения
                     if 'load' in request.POST:
-                        profile_img = '8.jpg'
                         form = ImageForm(request.POST, request.FILES)
                         if form.is_valid():
                             fname = request.FILES['user_image'].name
-                            print(fname)
-                            print(rename_image(fname, u.id))
+                            if u.user_image:
+                                # удаляем старое изображение
+                                os.remove(image_dir + u.user_image)
                             form.save()
-
-                            #added_image = ProfileImg.objects.last()
-                        # return render(request, 'profile.html',
-                        #               {'user': u.name, 'profile_image': profile_img, 'form': form})
-
-
+                            # добавляем новое
+                            new_fname = rename_image(fname, u.id)
+                            os.rename(image_dir + fname, image_dir + new_fname)
+                            u.user_image = new_fname
+                            u.save(force_update=True)
+                            profile_img = u.user_image
 
                 form = ImageForm()
                 return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form})
         else:
-            print('Куки удалены')
+            # удаляем куки с сессией, если пользователь с таким сессионным ключом не найден
             html = render(request, 'index.html')
             html.delete_cookie('user_session')
             return html
@@ -106,5 +111,8 @@ def generate_session(key: str):
     return key
 
 def rename_image(fname: str, user_id: int):
-    new_fname = 'IMG-' + str(user_id) + '.' + fname.split('.')[-1]
+    new_fname = 'IMG-' + str(user_id) + '-'
+    for i in range(5):
+        new_fname += chr(random.randint(65, 90))
+    new_fname += '.' + fname.split('.')[-1]
     return new_fname
