@@ -65,7 +65,8 @@ def index(request):
 
                 form = ImageForm()
                 bot_button = ["Запустить", "Остановить"]
-                return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form, 'bot': bot_button[u.bot_started]})
+                return render(request, 'profile.html', {'user': u, 'profile_image': profile_img, 'form': form, 'bot': bot_button[hasBotStarted]})
+                #return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form, 'bot': bot_button[u.bot_started]})
         else:
             # удаляем куки с сессией, если пользователь с таким сессионным ключом не найден
             html = render(request, 'index.html')
