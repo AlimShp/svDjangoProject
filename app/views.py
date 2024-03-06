@@ -9,6 +9,7 @@ from app.models import ModelReg
 
 
 hasBotStarted = False
+bot_button = ["Запустить", "Остановить"]
 image_dir = 'app/static/img/'
 
 
@@ -33,19 +34,21 @@ def index(request):
                         return html
                     if 'tbot' in request.POST:
                         # проверка состояния бота на соответствие отображаемой кнопки у юзера
-                        #if hasBotStarted == u.bot_started:
-                        if True:
+                        if bot_button[hasBotStarted] == u.bot_btn:
+                        #if True:
                             if hasBotStarted:
                                 profile_img = u.user_image
                                 hasBotStarted = False
                             else:
                                 profile_img = 'base_profile.jpg'
                                 hasBotStarted = True
-                        # else:
-                        #     answer = "Cостояние бота уже было изменено другим пользователем"
-                        #     print(answer)
-                        # u.bot_started = hasBotStarted
-                        # u.save(force_update=True)
+                        else:
+                            answer = "Cостояние бота уже было изменено другим пользователем"
+                            print(answer)
+                        u.bot_btn = bot_button[hasBotStarted]
+                        print(hasBotStarted)
+                        print(u.bot_btn)
+                        u.save(force_update=True)
 
                     # загрузка изображения
                     if 'load' in request.POST:
@@ -64,9 +67,7 @@ def index(request):
                             profile_img = u.user_image
 
                 form = ImageForm()
-                bot_button = ["Запустить", "Остановить"]
-                return render(request, 'profile.html', {'user': u, 'profile_image': profile_img, 'form': form, 'bot': bot_button[hasBotStarted]})
-                #return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form, 'bot': bot_button[u.bot_started]})
+                return render(request, 'profile.html', {'user': u, 'profile_image': profile_img, 'form': form})
         else:
             # удаляем куки с сессией, если пользователь с таким сессионным ключом не найден
             html = render(request, 'index.html')
@@ -79,6 +80,7 @@ def index(request):
 @csrf_exempt
 def register(request):
     global hasBotStarted
+    global bot_button
     if request.method == 'POST':
         users = ModelReg.objects.all()
         for u in users:
@@ -89,9 +91,11 @@ def register(request):
         reg.password = request.POST['pass']
         reg.name = request.POST['name']
         reg.user_session = generate_session(reg.email)
+        reg.bot_btn = bot_button[hasBotStarted]
+        print(hasBotStarted)
+        print(u.bot_btn)
         reg.save()
-        # reg.bot_started = hasBotStarted
-        # reg.save(force_update=True)
+
         html = redirect('/')
         html.set_cookie('user_session', reg.user_session)
         return html
@@ -108,6 +112,9 @@ def login(request):
                 if request.POST['pass'] == u.password:
                     # new session key for user
                     u.user_session = generate_session(u.email)
+                    u.bot_btn = bot_button[hasBotStarted]
+                    print(hasBotStarted)
+                    print(u.bot_btn)
                     u.save(force_update=True)
                     html = redirect('/')
                     html.set_cookie('user_session', u.user_session)
