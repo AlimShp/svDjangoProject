@@ -1,4 +1,5 @@
 import os
+import platform
 import random
 
 from django.shortcuts import render, redirect
@@ -36,12 +37,15 @@ def index(request):
                     if 'tbot' in request.POST:
                         # проверка состояния бота на соответствие отображаемой кнопки у юзера
                         if bot_button[hasBotStarted] == u.bot_btn:
-                        #if True:
                             if hasBotStarted:
                                 os.system('pm2 stop svbot')
                                 hasBotStarted = False
                             else:
-                                os.system('pm2 start botPay.py --name="svbot" --interpreter=python')
+                                # меняем на --interpreter=python3 для Unix систем
+                                for_unix = '3'
+                                if 'Windows' in platform.platform():
+                                    for_unix = ''
+                                os.system('pm2 start botPay.py --name="svbot" --interpreter=python' + for_unix)
                                 hasBotStarted = True
                         else:
                             answer = "Cостояние бота уже было изменено другим пользователем"
@@ -65,9 +69,7 @@ def index(request):
                             os.rename(image_dir + fname, image_dir + new_fname)
                             u.user_image = new_fname
                             u.save(force_update=True)
-                            profile_img = u.user_image
-
-
+                            profile_img = new_fname
                 form = ImageForm()
                 print(profile_img)
                 return render(request, 'profile.html', {'user': u, 'profile_image': profile_img, 'form': form})
