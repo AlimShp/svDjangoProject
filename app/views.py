@@ -32,13 +32,22 @@ def index(request):
                         html.delete_cookie('user_session')
                         return html
                     if 'tbot' in request.POST:
-                        if hasBotStarted:
-                            profile_img = u.user_image
-                            hasBotStarted = False
-                        else:
-                            profile_img = 'base_profile.jpg'
-                            hasBotStarted = True
-                            # загрузка изображения
+                        # проверка состояния бота на соответствие отображаемой кнопки у юзера
+                        #if hasBotStarted == u.bot_started:
+                        if True:
+                            if hasBotStarted:
+                                profile_img = u.user_image
+                                hasBotStarted = False
+                            else:
+                                profile_img = 'base_profile.jpg'
+                                hasBotStarted = True
+                        # else:
+                        #     answer = "Cостояние бота уже было изменено другим пользователем"
+                        #     print(answer)
+                        # u.bot_started = hasBotStarted
+                        # u.save(force_update=True)
+
+                    # загрузка изображения
                     if 'load' in request.POST:
                         form = ImageForm(request.POST, request.FILES)
                         if form.is_valid():
@@ -56,7 +65,7 @@ def index(request):
 
                 form = ImageForm()
                 bot_button = ["Запустить", "Остановить"]
-                return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form, 'bot': bot_button[hasBotStarted]})
+                return render(request, 'profile.html', {'user': u.name, 'profile_image': profile_img, 'form': form, 'bot': bot_button[u.bot_started]})
         else:
             # удаляем куки с сессией, если пользователь с таким сессионным ключом не найден
             html = render(request, 'index.html')
@@ -68,6 +77,7 @@ def index(request):
 
 @csrf_exempt
 def register(request):
+    global hasBotStarted
     if request.method == 'POST':
         users = ModelReg.objects.all()
         for u in users:
@@ -79,6 +89,8 @@ def register(request):
         reg.name = request.POST['name']
         reg.user_session = generate_session(reg.email)
         reg.save()
+        # reg.bot_started = hasBotStarted
+        # reg.save(force_update=True)
         html = redirect('/')
         html.set_cookie('user_session', reg.user_session)
         return html
