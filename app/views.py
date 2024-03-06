@@ -25,6 +25,7 @@ def index(request):
                 profile_img = 'base_profile.jpg'
                 if u.user_image:
                     profile_img = u.user_image
+                    print("Загружено изображение пользователя из базы: " + profile_img)
                 if request.method == "POST":
                     # проверка, что нажата кнопка Выйти, и удаление пользовательской сессии
                     if 'logout' in request.POST:
@@ -37,10 +38,10 @@ def index(request):
                         if bot_button[hasBotStarted] == u.bot_btn:
                         #if True:
                             if hasBotStarted:
-                                profile_img = u.user_image
+                                os.system('pm2 stop svbot')
                                 hasBotStarted = False
                             else:
-                                profile_img = 'base_profile.jpg'
+                                os.system('pm2 start botPay.py --name="svbot" --interpreter=python')
                                 hasBotStarted = True
                         else:
                             answer = "Cостояние бота уже было изменено другим пользователем"
@@ -66,7 +67,9 @@ def index(request):
                             u.save(force_update=True)
                             profile_img = u.user_image
 
+
                 form = ImageForm()
+                print(profile_img)
                 return render(request, 'profile.html', {'user': u, 'profile_image': profile_img, 'form': form})
         else:
             # удаляем куки с сессией, если пользователь с таким сессионным ключом не найден
