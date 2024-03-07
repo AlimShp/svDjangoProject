@@ -97,10 +97,8 @@ def register(request):
         reg.name = request.POST['name']
         reg.user_session = generate_session(reg.email)
         reg.bot_btn = bot_button[hasBotStarted]
-        print(hasBotStarted)
-        print(u.bot_btn)
         reg.save()
-
+        #добавляем куки с пользовательской сессией и редиректим на основную страницу
         html = redirect('/')
         html.set_cookie('user_session', reg.user_session)
         return html
@@ -118,8 +116,6 @@ def login(request):
                     # new session key for user
                     u.user_session = generate_session(u.email)
                     u.bot_btn = bot_button[hasBotStarted]
-                    print(hasBotStarted)
-                    print(u.bot_btn)
                     u.save(force_update=True)
                     html = redirect('/')
                     html.set_cookie('user_session', u.user_session)

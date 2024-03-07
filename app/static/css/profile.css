@@ -1,0 +1,10 @@
+        body {
+          background-color: aliceblue;
+          margin: 0;
+        }
+        #load{
+            background-color: slateblue;
+        }
+        #load:hover{
+            background-color: darkslateblue;
+        }
